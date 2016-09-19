@@ -27,7 +27,7 @@ class LinearGraphTest {
 
     @Test
     fun testLinearGraph() {
-
+        println(getDummyGraph())
     }
 
 }
