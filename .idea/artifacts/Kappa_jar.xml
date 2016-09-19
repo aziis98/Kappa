@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="Kappa:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Kappa_jar</output-path>
-    <root id="archive" name="Kappa.jar">
-      <element id="module-output" name="Kappa" />
-    </root>
-  </artifact>
-</component>
