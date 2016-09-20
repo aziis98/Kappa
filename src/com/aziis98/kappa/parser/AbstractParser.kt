@@ -6,7 +6,6 @@ import java.nio.file.*
 import java.util.*
 
 // Copyright 2016 Antonio De Lucreziis
-
 abstract class AbstractParser {
 
     fun parse(path: Path, globalContext: LinearGraph<String, String> = LinearGraph<String, String>()): LinearGraph<String, String> {
@@ -16,12 +15,14 @@ abstract class AbstractParser {
 
         val local = globalContext.putPair(fileName)
 
-        parse(LinkedList(tokens), local)
+        parse(LinkedList(refineTokens(tokens)), local)
 
         return globalContext
     }
 
     protected abstract fun gluer(a: Char, b: Char): Boolean
+
+    protected abstract fun refineTokens(tokens: List<String>): List<String>
 
     protected abstract fun parse(tokens: LinkedList<String>, context: LinearGraph<String, String>.GraphNode)
 

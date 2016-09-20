@@ -9,10 +9,13 @@ package com.aziis98.utils
 
 
 fun stdGluer(a: Char, b: Char): Boolean =
-    (a.isWhitespace() && b.isWhitespace())
+        (a.isLetter() && b.isLetter())
+        || (a.isWhitespace() && b.isWhitespace())
         || (a.isDigit() && b.isDigit())
         || ((a.isDigit() && b == '.')
             || (a == '.' && b.isDigit()))
+        || (a == '/' && b == '*')
+        || (a == '*' && b == '/')
 
 fun tokenize(source: CharArray, gluer: (Char, Char) -> Boolean = ::stdGluer): List<CharArray> {
 
