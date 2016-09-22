@@ -1,4 +1,10 @@
 test {
     prova: "Test";
-    color: #123;
+    color: darker(red, 5%);
+}
+
+.my-class button {
+    color: rgba(255, 150, 100, 75);
+    background: orange;
+    border: 1px solid black;
 }

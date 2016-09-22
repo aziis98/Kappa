@@ -21,7 +21,6 @@ class LinearGraph<K, V> {
             if (key != null) {
                 rootValues.put(key, this)
             }
-
             values.add(this)
         }
     }
@@ -55,7 +54,7 @@ class LinearGraph<K, V> {
     data class GraphArrow<out K, V>(val origin: GraphNode, val key: K)
 
     override fun toString(): String {
-        return "LinearGraph($values)"
+        return "LinearGraph(\n  ${arrows.map { "${it.key.origin.value} -> ${it.key.key} : ${it.value.value}" }.joinToString("\n  ")}\n)"
     }
 
 }

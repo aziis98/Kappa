@@ -10,12 +10,11 @@ abstract class AbstractParser {
 
     fun parse(path: Path, globalContext: LinearGraph<String, String> = LinearGraph<String, String>()): LinearGraph<String, String> {
         val fileName = path.fileName.toString()
-
         val tokens = tokenize(path.toFile().readText().toCharArray()) { a, b -> gluer(a, b) }.map { String(it) }
-
         val local = globalContext.putPair(fileName)
+        val linkedList = LinkedList(refineTokens(tokens))
 
-        parse(LinkedList(refineTokens(tokens)), local)
+        parse(linkedList, local)
 
         return globalContext
     }

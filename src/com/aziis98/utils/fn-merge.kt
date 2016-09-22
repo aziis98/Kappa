@@ -17,42 +17,55 @@ enum class MergeState {
     None, Open, Continue, Close
 }
 
+data class MatchPreset<T>(val type: String, val start: (T) -> Boolean, val end: (T) -> Boolean)
+
+data class MergeData(val state: MergeState, val type: String) {
+    companion object {
+        val None = MergeData(MergeState.None, "none")
+    }
+}
+
 fun <T> testOf(value: T) = { it : T -> it == value }
 
-internal fun <T> preset(predicate: Pair<(T) -> Boolean, (T) -> Boolean>): (MergeState, T) -> MergeState {
-    return { state, element ->
+internal fun <T> createMergePredicate(predicate: List<MatchPreset<T>>): (MergeData, T) -> MergeData {
+    return { data, element ->
+        val foundStart = predicate.find { it.start(element) }
+        val foundEnd = predicate.find { data.type == it.type && it.end(element) }
         when {
-            state == MergeState.None && predicate.first(element) -> MergeState.Open
-            state == MergeState.Continue && predicate.second(element) -> MergeState.Close
-
-            else -> state
+            data.state == MergeState.None
+                    && foundStart != null
+                -> MergeData(MergeState.Open, foundStart.type)
+            data.state == MergeState.Continue
+                    && foundEnd != null
+                -> data.copy(state = MergeState.Close)
+            else -> data
         }
     }
 }
 
-fun <T> presetsOf(vararg triggers: Pair<(T) -> Boolean, (T) -> Boolean>)
-        : (MergeState, T) -> MergeState {
-    val unzipped = triggers.unzip()
+fun <T> templateOf(type: String, start: T, end: T)
+        = templateOf(type, testOf(start), testOf(end))
 
-    return preset(Pair(
-            { it -> unzipped.first.any { trigger -> trigger(it) } },
-            { it -> unzipped.second.any { trigger -> trigger(it) } }
-    )
-)
+fun <T> templateOf(type: String, start: (T) -> Boolean, end: (T) -> Boolean)
+        = MatchPreset(type, start, end)
+
+fun <T> templatesOf(vararg triggers: MatchPreset<T>)
+        : (MergeData, T) -> MergeData {
+    return createMergePredicate(triggers.toList())
 }
 
 inline fun <T> List<T>.merge(combiner: (list: List<T>) -> T,
-                      mergeStateFn: (state: MergeState, element: T) -> MergeState): List<T> {
+                             mergePredicate: MergeData.(element: T) -> MergeData): List<T> {
     val newlist = mutableListOf<T>()
     val buffer = mutableListOf<T>()
 
-    var mergeState = MergeState.None
+    var mergeData = MergeData.None
 
     forEach {
-        mergeState = mergeStateFn(mergeState, it)
-        when (mergeState) {
+        mergeData = mergeData.mergePredicate(it)
+        when (mergeData.state) {
             MergeState.Open -> {
-                mergeState = MergeState.Continue
+                mergeData = mergeData.copy(state = MergeState.Continue)
                 buffer.clear()
                 buffer.add(it)
             }
@@ -60,7 +73,7 @@ inline fun <T> List<T>.merge(combiner: (list: List<T>) -> T,
                 buffer.add(it)
             }
             MergeState.Close -> {
-                mergeState = MergeState.None
+                mergeData = MergeData.None
                 buffer.add(it)
                 newlist.add(combiner(buffer))
             }

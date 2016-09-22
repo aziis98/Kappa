@@ -9,25 +9,18 @@ import org.junit.Test
 class Fn_mergeKtTest {
     @Test
     fun test() {
-        val list = tokenize("prova, non123 \" test \" /*a comment*/".toCharArray()).map { String(it) }
+        val list = tokenize((
+                "prova, non123 \" test" +
+                " \" /*a co \" mment*/" +
+                "testing | prova 1 or 2 but | to 2 by 1").toCharArray()).map { String(it) }
 
         println(list.map { "[$it]" }.joinToString(" "))
 
-        /*
-        val merged = list.merge({ it.joinToString("") }, { state, element ->
-            when {
-                state == MergeState.None && (
-                        element == "\"" || element == "/*") -> MergeState.Open
-                state == MergeState.Continue
-                        && (element == "\"" || element == "*/") -> MergeState.Close
-                else -> state
-            }
-        })
-        */
-
-        val merged2 = list.merge( {it.joinToString("") }, presetsOf(
-                testOf("/*") to testOf("*/"),
-                testOf("\"") to testOf("\"")
+        val merged2 = list.merge( {it.joinToString("") }, templatesOf(
+                templateOf("string", "\"", "\""),
+                templateOf("comment", "/*", "*/"),
+                templateOf("pipe1", "|", "1"),
+                templateOf("pipe1", "|", "2")
         ))
 
         println(merged2.map { "[$it]" }.joinToString(" "))
