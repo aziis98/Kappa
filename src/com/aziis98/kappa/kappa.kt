@@ -1,17 +1,15 @@
 package com.aziis98.kappa
 
-import com.aziis98.kappa.control.ContainerWindow
+import java.awt.Graphics2D
 
 // Copyright 2016 Antonio De Lucreziis
 
-interface KappaApplication {
-    fun setupWindow(containerWindow: ContainerWindow) {
-        containerWindow.apply {
-            containerWindow.setup()
-        }
-    }
+abstract class KappaApplication {
+    val windowHandle by lazy { createWindow(this) }
 
-    fun ContainerWindow.setup()
+    abstract fun setup()
+
+    abstract fun draw(g: Graphics2D)
 }
 
 object Kappa {
@@ -22,10 +20,10 @@ object Kappa {
 
         Kappa.args = args
 
-        val containerWindow = ContainerWindow()
-        val windowHandle = createWindow(containerWindow)
+        // Initializes the window
+        instance.windowHandle.visible = true
 
-        instance.setupWindow(containerWindow)
+        instance.setup()
     }
 
     object Controls {
@@ -36,12 +34,12 @@ object Kappa {
         fun milliTime(): Long {
             return System.nanoTime() / 1000000
         }
+
+        fun currentSeconds(): Double = milliTime() / 1000.0
     }
 
     object Properties {
-        inline fun <reified R> register(propertyFactory: PropertyFactory<R>) {
-            Property.register<R>(propertyFactory)
-        }
+
     }
 }
 

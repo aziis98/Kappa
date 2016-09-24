@@ -9,7 +9,8 @@ import java.util.*
 
 // Copyright 2016 Antonio De Lucreziis
 
-object ParserCSS : AbstractParser() {
+@Deprecated("This is old and going away", ReplaceWith("ParserCSS"))
+object OldParserCSS : AbstractParser() {
 
     override fun gluer(a: Char, b: Char): Boolean {
         return (a.isLetter() && b.isLetter())

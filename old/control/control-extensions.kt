@@ -1,7 +1,7 @@
 package com.aziis98.kappa.control
 
 import com.aziis98.kappa.WindowHandle
-import com.aziis98.kappa.parser.ParserCSS
+import com.aziis98.kappa.parser.OldParserCSS
 import com.aziis98.kappa.structure.LinearGraph
 import com.aziis98.kappa.structure.forEachRoot
 import java.awt.Graphics2D
@@ -22,7 +22,7 @@ class ContainerWindow() : Container(null, "window") {
     }
 
     fun loadStyle(path: Path) {
-        ParserCSS.parse(path, stylesObject)
+        OldParserCSS.parse(path, stylesObject)
     }
 
     fun updateStyles() {

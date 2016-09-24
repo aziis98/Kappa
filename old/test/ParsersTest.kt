@@ -1,6 +1,5 @@
 package com.aziis98.test
 
-import com.aziis98.kappa.parser.ParserCSS
 import org.junit.Test
 import java.nio.file.Paths
 
@@ -10,6 +9,6 @@ import java.nio.file.Paths
 class ParsersTest {
     @Test
     fun test() {
-        println(ParserCSS.parse(Paths.get("res/test.css")))
+        println(OldParserCSS.parse(Paths.get("res/test.css")))
     }
 }
