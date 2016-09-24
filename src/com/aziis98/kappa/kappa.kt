@@ -17,15 +17,13 @@ interface KappaApplication {
 object Kappa {
     lateinit var args: Array<String>
 
-    inline fun <reified R : KappaApplication> launch(args: Array<String>) {
-        println("Launching ${R::class.simpleName}")
-        val instance = R::class.objectInstance
-                ?: error("The control ${R::class.simpleName} has no object instance!")
+    fun launch(instance: KappaApplication, args: Array<String>) {
+        println("Launching ${instance.javaClass.simpleName}")
 
         Kappa.args = args
 
-        val windowHandle = createWindow()
         val containerWindow = ContainerWindow()
+        val windowHandle = createWindow(containerWindow)
 
         instance.setupWindow(containerWindow)
     }

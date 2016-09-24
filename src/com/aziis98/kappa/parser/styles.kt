@@ -14,6 +14,7 @@ object ParserCSS : AbstractParser() {
     override fun gluer(a: Char, b: Char): Boolean {
         return (a.isLetter() && b.isLetter())
                 || (a.isDigit() && b.isDigit())
+                || (a.isLetter() && b.isDigit())
                 || (a.isDigit() && b == '.')
                 || (a == '.' && b.isDigit())
                 || (a == '.' && b.isLetter())
@@ -21,6 +22,7 @@ object ParserCSS : AbstractParser() {
                 || (a == '-' && b.isLetter())
                 || (a == '\\' && b.isLetter())
                 || (a == '#' && b.isDigit() )
+                || (a == '#' && b.isLetter() )
     }
 
     override fun refineTokens(tokens: List<String>): List<String> {

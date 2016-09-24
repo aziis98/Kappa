@@ -1,5 +1,6 @@
 package com.aziis98.kappa
 
+import com.aziis98.kappa.control.ContainerWindow
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -56,7 +57,9 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
     }
 }
 
-fun createWindow(): WindowHandle {
+fun createWindow(containerWindow: ContainerWindow): WindowHandle {
+
+    var windowHandle: WindowHandle? = null
 
     val jframe = JFrame("<untitled>")
     jframe.setLocationRelativeTo(null)
@@ -71,17 +74,16 @@ fun createWindow(): WindowHandle {
             g.background = Color.BLACK
             g.clearRect(0, 0, jframe.width, jframe.height)
 
-            g.color = Color.RED
-            g.drawRect(0, 0, this.width - 1, this.height - 1)
+            containerWindow.renderRoot(g, windowHandle!!)
 
             repaint()
         }
     }
 
     jframe.contentPane.add(jPanel)
-    jframe.isVisible = true
 
     return WindowHandle(jframe, jPanel).apply {
-        WindowHandle.Mouse
+        windowHandle = this
+        jframe.isVisible = true
     }
 }

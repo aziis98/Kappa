@@ -62,6 +62,9 @@ class Property<T>(value: T) {
     var value: T = value
         get() = field
         set(value) {
+            println("value-isstring: ${value is String}, field-iscolor: ${field is Color}")
+            println("$field -> $value")
+
             val oldValue = value
             if (listeners.all { it.onSet(oldValue, field) }) {
                 field = oldValue

@@ -46,8 +46,12 @@ class LinearGraph<K, V> {
 
         operator fun get(key: K) = getByOrigin(this, key)
 
+        fun nodes(): Map<K, GraphNode> {
+            return arrows.filter { it.key.origin == this }.mapKeys { it.key.key }
+        }
+
         override fun toString(): String {
-            return "GraphNode(value = $value, hash = ${hashCode()})"
+            return "[$value]"
         }
     }
 
@@ -59,7 +63,7 @@ class LinearGraph<K, V> {
 
 }
 
-inline fun <T> LinearGraph<*, T>.forEachRoot(fn: (LinearGraph<*, T>.GraphNode) -> Unit) {
+inline fun <K, T> LinearGraph<K, T>.forEachRoot(fn: (LinearGraph<K, T>.GraphNode) -> Unit) {
     rootValues.forEach {
         fn(it.value)
     }
