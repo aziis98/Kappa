@@ -55,7 +55,8 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
             x = (e.x / resolutionFactor).toInt()
             y = (e.y / resolutionFactor).toInt()
 
-            jPanel.cursor = Cursor(cursor)
+            jPanel.cursor = Cursor.getPredefinedCursor(cursor)
+            cursor = Cursor.DEFAULT_CURSOR
         }
 
         init {
