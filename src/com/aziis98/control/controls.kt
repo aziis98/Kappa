@@ -1,6 +1,7 @@
 package com.aziis98.control
 
 import com.aziis98.kappa.WindowHandle
+import com.sun.org.apache.xpath.internal.operations.Bool
 import java.awt.Color
 import java.awt.Graphics2D
 import java.util.*
@@ -9,11 +10,11 @@ import java.util.*
  * Created by aziis98 on 24/09/2016.
  */
 
-inline fun <C : Control> C.dynamic(crossinline action: (C) -> Unit) {
+inline fun <C : Control> C.dynamic(crossinline action: C.() -> Unit) {
     this.dynamics.add(object : IDynamic {
         @Suppress("UNCHECKED_CAST")
         override fun update(control: Control) {
-            action(control as C)
+            (control as C).action()
         }
     })
 }
@@ -22,7 +23,7 @@ interface IDynamic {
     fun update(control: Control)
 }
 
-open class Control(val id: String) {
+open class Control(val handle: WindowHandle, val id: String) {
 
     var dynamics = ArrayList<IDynamic>()
 
@@ -37,6 +38,12 @@ open class Control(val id: String) {
     var height: Int = -1
 
     var borderRadius: Int = 0
+
+    var hover: Boolean = false
+
+    init {
+        appendHoverDynamic()
+    }
 
     private fun updateDynamics() {
         dynamics.forEach {
@@ -57,9 +64,9 @@ open class Control(val id: String) {
     }
 }
 
-open class ChildControl(val parent: Control, id: String) : Control(id)
+open class ChildControl(handle: WindowHandle, val parent: Control, id: String) : Control(handle, id)
 
-open class Container(parent: Control, id: String) : ChildControl(parent, id) {
+open class Container(handle: WindowHandle, parent: Control, id: String) : ChildControl(handle, parent, id) {
     val children = ArrayList<ChildControl>()
 
     override fun render(g: Graphics2D) {
@@ -75,8 +82,8 @@ open class Container(parent: Control, id: String) : ChildControl(parent, id) {
     }
 }
 
-open class WindowControl(val handle: WindowHandle) : Control("window") {
-    val rootContainer = Container(this, "root")
+open class WindowControl(handle: WindowHandle) : Control(handle, "window") {
+    val rootContainer = Container(handle, this, "root")
 
     init {
         x = 0
@@ -98,7 +105,7 @@ open class WindowControl(val handle: WindowHandle) : Control("window") {
 }
 
 inline fun <reified R : ChildControl> Container.appendReflective(id: String): R {
-    val newControl = R::class.constructors.first().call(this, id)
+    val newControl = R::class.constructors.first().call(handle, this, id)
     append(newControl)
     return newControl
 }

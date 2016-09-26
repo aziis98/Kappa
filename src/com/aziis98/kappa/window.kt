@@ -22,15 +22,17 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
         }
 
     val windowWidth: Int
-        get() = jFrame.width
+        get() = (jFrame.width / resolutionFactor).toInt()
     val windowHeight: Int
-        get() = jFrame.height
+        get() = (jFrame.height / resolutionFactor).toInt()
 
     var resizable: Boolean
         get() = jFrame.isResizable
         set(value) {
             jFrame.isResizable = value
         }
+
+    val resolutionFactor by lazy { Toolkit.getDefaultToolkit().screenResolution * 0.01 }
 
     var visible: Boolean
         get() = jFrame.isVisible
@@ -44,9 +46,15 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
         var x = 0
         var y = 0
 
+        var prevX = 0
+        var prevY = 0
+
         override fun mouseMoved(e: MouseEvent) {
-            x = e.x
-            y = e.y
+            prevX = x
+            prevY = y
+
+            x = (e.x / resolutionFactor).toInt()
+            y = (e.y / resolutionFactor).toInt()
         }
 
         init {
