@@ -59,6 +59,13 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
             cursor = Cursor.DEFAULT_CURSOR
         }
 
+        override fun mouseExited(e: MouseEvent?) {
+            prevX = 0
+            x = 0
+            prevY = 0
+            y = 0
+        }
+
         init {
             jPanel.addMouseListener(this)
             jPanel.addMouseMotionListener(this)

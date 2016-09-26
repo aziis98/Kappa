@@ -72,9 +72,13 @@ open class Container(handle: WindowHandle, parent: Control, id: String) : ChildC
     override fun render(g: Graphics2D) {
         super.render(g)
 
+        g.translate(x, y)
+
         children.forEach {
             it.render(g)
         }
+
+        g.translate(-x, -y)
     }
 
     fun append(control: ChildControl) {
@@ -88,11 +92,15 @@ open class WindowControl(handle: WindowHandle) : Control(handle, "window") {
     init {
         x = 0
         y = 0
+
+        rootContainer.dynamic {
+            positionSides(0, 0)
+        }
     }
 
     fun update() {
-        width = handle.windowWidth
-        height = handle.windowHeight
+        width = (handle.jPanel.width / handle.resolutionFactor).toInt()
+        height = (handle.jPanel.height / handle.resolutionFactor).toInt()
     }
 
     override fun render(g: Graphics2D) {
@@ -104,8 +112,8 @@ open class WindowControl(handle: WindowHandle) : Control(handle, "window") {
     }
 }
 
-inline fun <reified R : ChildControl> Container.appendReflective(id: String): R {
+inline fun <reified R : ChildControl> Container.create(id: String, init: R.() -> Unit): R {
     val newControl = R::class.constructors.first().call(handle, this, id)
     append(newControl)
-    return newControl
+    return newControl.apply(init)
 }
