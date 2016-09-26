@@ -1,9 +1,6 @@
 package com.aziis98.kappa
 
-import java.awt.Color
-import java.awt.Graphics
-import java.awt.Graphics2D
-import java.awt.Toolkit
+import java.awt.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JFrame
@@ -49,12 +46,16 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
         var prevX = 0
         var prevY = 0
 
+        var cursor = Cursor.DEFAULT_CURSOR
+
         override fun mouseMoved(e: MouseEvent) {
             prevX = x
             prevY = y
 
             x = (e.x / resolutionFactor).toInt()
             y = (e.y / resolutionFactor).toInt()
+
+            jPanel.cursor = Cursor(cursor)
         }
 
         init {
