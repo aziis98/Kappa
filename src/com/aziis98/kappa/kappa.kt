@@ -1,13 +1,13 @@
 package com.aziis98.kappa
 
-import com.aziis98.control.Window
+import com.aziis98.control.WindowControl
 import java.awt.Graphics2D
 
 // Copyright 2016 Antonio De Lucreziis
 
 abstract class KappaApplication {
-    val windowHandle by lazy { createWindow(this) }
-    val window by lazy { Window(windowHandle) }
+    val handle = createWindow(this)
+    val window = WindowControl(handle)
 
     abstract fun setup()
 

@@ -3,6 +3,7 @@ package com.aziis98.kappa
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
+import java.awt.Toolkit
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JFrame
@@ -67,6 +68,10 @@ fun createWindow(instance: KappaApplication): WindowHandle {
     val jPanel = object : JPanel(true) {
         override fun paintComponent(g: Graphics) {
             g as Graphics2D
+
+            val resolutionFactor = Toolkit.getDefaultToolkit().screenResolution * 0.01
+
+            g.scale(resolutionFactor, resolutionFactor)
 
             g.background = Color.BLACK
             g.clearRect(0, 0, jframe.width, jframe.height)
