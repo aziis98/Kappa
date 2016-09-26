@@ -1,11 +1,13 @@
 package com.aziis98.kappa
 
+import com.aziis98.control.Window
 import java.awt.Graphics2D
 
 // Copyright 2016 Antonio De Lucreziis
 
 abstract class KappaApplication {
     val windowHandle by lazy { createWindow(this) }
+    val window by lazy { Window(windowHandle) }
 
     abstract fun setup()
 
@@ -19,9 +21,6 @@ object Kappa {
         println("Launching ${instance.javaClass.simpleName}")
 
         Kappa.args = args
-
-        // Initializes the window
-        instance.windowHandle.visible = true
 
         instance.setup()
     }
