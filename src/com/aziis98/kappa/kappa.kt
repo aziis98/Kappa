@@ -1,6 +1,7 @@
 package com.aziis98.kappa
 
 import com.aziis98.control.WindowControl
+import java.awt.Font
 import java.awt.Graphics2D
 
 // Copyright 2016 Antonio De Lucreziis
@@ -37,8 +38,8 @@ object Kappa {
         fun currentSeconds(): Double = milliTime() / 1000.0
     }
 
-    object Properties {
-
+    object Constants {
+        val defaultFont = Font("Segoe UI", Font.PLAIN, 16)
     }
 }
 

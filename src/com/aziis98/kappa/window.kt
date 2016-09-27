@@ -60,10 +60,10 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
         }
 
         override fun mouseExited(e: MouseEvent?) {
-            prevX = 0
-            x = 0
-            prevY = 0
-            y = 0
+            prevX = -1
+            x = -1
+            prevY = -1
+            y = -1
         }
 
         init {

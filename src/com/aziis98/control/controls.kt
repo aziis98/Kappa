@@ -69,16 +69,26 @@ open class ChildControl(handle: WindowHandle, val parent: Control, id: String) :
 open class Container(handle: WindowHandle, parent: Control, id: String) : ChildControl(handle, parent, id) {
     val children = ArrayList<ChildControl>()
 
+    var directlyHover = false
+
+    init {
+        dynamic {
+            directlyHover = hover && children.all { !it.hover }
+        }
+    }
+
     override fun render(g: Graphics2D) {
         super.render(g)
 
-        g.translate(x, y)
+        clipGraphics(g)
 
+        g.translate(x, y)
         children.forEach {
             it.render(g)
         }
-
         g.translate(-x, -y)
+
+        g.clip = null
     }
 
     fun append(control: ChildControl) {
@@ -116,4 +126,8 @@ inline fun <reified R : ChildControl> Container.create(id: String, init: R.() ->
     val newControl = R::class.constructors.first().call(handle, this, id)
     append(newControl)
     return newControl.apply(init)
+}
+
+fun Control.clipGraphics(g: Graphics2D) {
+    g.clipRect(x, y, width, height)
 }
