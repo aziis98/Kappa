@@ -1,8 +1,10 @@
 package com.aziis98.kappa
 
 import com.aziis98.control.WindowControl
+import com.aziis98.control.dynamic
 import java.awt.Font
 import java.awt.Graphics2D
+import java.awt.Toolkit
 
 // Copyright 2016 Antonio De Lucreziis
 
@@ -13,6 +15,9 @@ abstract class KappaApplication {
     abstract fun setup()
 
     abstract fun draw(g: Graphics2D)
+
+    open val preferedWindowWidth: Int = 640
+    open val preferedWindowHeight: Int = 480
 }
 
 object Kappa {
@@ -22,6 +27,8 @@ object Kappa {
         println("Launching ${instance.javaClass.simpleName}")
 
         Kappa.args = args
+
+        instance.window.dynamic { instance.window.handle.keyboard.updateKeyEvents() }
 
         instance.setup()
     }
@@ -39,7 +46,10 @@ object Kappa {
     }
 
     object Constants {
-        val defaultFont = Font("Segoe UI", Font.PLAIN, 16)
+        val defaultFont = Font("Segoe UI", Font.PLAIN, 15)
+        val resolutionFactor = Toolkit.getDefaultToolkit().screenResolution * 0.01
+
+        var keyCooldown = 200
     }
 }
 

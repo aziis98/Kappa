@@ -6,5 +6,5 @@ package com.aziis98.control
 
 
 fun <C : Control> C.appendHoverDynamic() = dynamic {
-    hover = (handle.mouse.x in x..x + width) && (handle.mouse.y in y..y + height)
+    hover = (handle.mouse.x in absoluteX..absoluteX + width) && (handle.mouse.y in absoluteY..absoluteY + height)
 }

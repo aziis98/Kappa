@@ -3,6 +3,7 @@ package com.aziis98.control
 import com.aziis98.kappa.Kappa
 import com.aziis98.kappa.WindowHandle
 import com.aziis98.utils.drawCenteredString
+import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
 import java.util.*
@@ -19,25 +20,29 @@ open class TextControl(handle: WindowHandle, parent: Control, id: String) : Chil
     var text = ""
     var font = Kappa.Constants.defaultFont
 
+    var textColor = Color.BLACK
+
     var wrapMode = WrapMode.Centered
 
     override fun render(g: Graphics2D) {
         super.render(g)
 
         clipGraphics(g)
-
+        g.font = font
         g.translate(x, y)
 
         val bounds = g.fontMetrics.getStringBounds(text, g)
         val lines = text.split("\n")
         val lineHeight = bounds.height.toInt()
 
+        g.color = textColor
+
         when (wrapMode) {
             TextControl.WrapMode.Centered -> {
                 lines.forEachIndexed { i, line ->
                     g.drawCenteredString(line,
                             width / 2,
-                            (height - lineHeight * lines.size) / 2 + i * lineHeight
+                            (height - lineHeight * lines.size) / 2 + i * lineHeight + lineHeight / 2
                     )
                 }
             }

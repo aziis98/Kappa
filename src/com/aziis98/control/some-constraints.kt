@@ -20,3 +20,31 @@ fun <C : ChildControl> C.positionAbsolute(x: Int = 0, y: Int = 0, width: Int = p
     this.width = width
     this.height = height
 }
+
+fun <C : Container> C.distributeHorizontal() {
+    children.forEachIndexed { i, control ->
+        control.x = i * this.width / children.size
+        control.width = this.width / children.size
+    }
+}
+
+fun <C : Container> C.distributeVertical() {
+    children.forEachIndexed { i, control ->
+        control.y = i * this.height / children.size
+        control.height = this.height / children.size
+    }
+}
+
+fun <C : Container> C.stackHorizontal(width: Int) {
+    children.forEachIndexed { i, control ->
+        control.x = i * (width + 1)
+        control.width = width
+    }
+}
+
+fun <C : Container> C.stackVertical(height: Int) {
+    children.forEachIndexed { i, control ->
+        control.y = i * (height + 1)
+        control.height = height
+    }
+}

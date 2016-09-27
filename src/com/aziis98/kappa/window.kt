@@ -1,6 +1,10 @@
 package com.aziis98.kappa
 
+import com.aziis98.utils.fixJFrameAtCenter
+import com.sun.org.apache.xpath.internal.operations.Bool
 import java.awt.*
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JFrame
@@ -18,10 +22,23 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
             jFrame.title = value
         }
 
-    val windowWidth: Int
+    var windowWidth: Int
         get() = (jFrame.width / resolutionFactor).toInt()
-    val windowHeight: Int
+        set(value) {
+            jFrame.setSize(
+                    (value * resolutionFactor).toInt(),
+                    jFrame.height
+            )
+        }
+
+    var windowHeight: Int
         get() = (jFrame.height / resolutionFactor).toInt()
+        set(value) {
+            jFrame.setSize(
+                    jFrame.width,
+                    (value * resolutionFactor).toInt()
+            )
+        }
 
     var resizable: Boolean
         get() = jFrame.isResizable
@@ -38,6 +55,7 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
         }
 
     val mouse = Mouse()
+    val keyboard = Keyboard()
 
     inner class Mouse : MouseAdapter() {
         var x = 0
@@ -72,6 +90,42 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
             jPanel.addMouseWheelListener(this)
         }
     }
+
+    inner class Keyboard : KeyAdapter() {
+        var lastKey = -1
+        var lastChar = ' '
+        var isKeyPressed = false
+        var isKeyPressedPrev = false
+
+        var keyCooldown = 0
+        val isEvent: Boolean
+            get() = keyCooldown > 0
+
+        fun updateKeyEvents() {
+            if (isKeyPressed != isKeyPressedPrev) {
+                keyCooldown = Kappa.Constants.keyCooldown
+            } else {
+                if (keyCooldown > 0) keyCooldown--
+            }
+        }
+
+        override fun keyPressed(e: KeyEvent) {
+            lastKey = e.keyCode
+            isKeyPressedPrev = isKeyPressed
+            isKeyPressed = true
+        }
+        override fun keyReleased(e: KeyEvent) {
+            lastKey = e.keyCode
+            isKeyPressedPrev = isKeyPressed
+            isKeyPressed = false
+        }
+        override fun keyTyped(e: KeyEvent) {
+            lastKey = e.keyCode
+            lastChar = e.keyChar
+            isKeyPressedPrev = isKeyPressed
+            isKeyPressed = true
+        }
+    }
 }
 
 fun createWindow(instance: KappaApplication): WindowHandle {
@@ -79,16 +133,17 @@ fun createWindow(instance: KappaApplication): WindowHandle {
     val jframe = JFrame("<untitled>")
     jframe.setLocationRelativeTo(null)
     jframe.isResizable = true
-    jframe.setSize(1000, 600)
+    jframe.setSize(
+            (Kappa.Constants.resolutionFactor * instance.preferedWindowWidth).toInt(),
+            (Kappa.Constants.resolutionFactor * instance.preferedWindowHeight).toInt()
+    )
     jframe.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 
     val jPanel = object : JPanel(true) {
         override fun paintComponent(g: Graphics) {
             g as Graphics2D
 
-            val resolutionFactor = Toolkit.getDefaultToolkit().screenResolution * 0.01
-
-            g.scale(resolutionFactor, resolutionFactor)
+            g.scale(Kappa.Constants.resolutionFactor, Kappa.Constants.resolutionFactor)
 
             g.background = Color.BLACK
             g.clearRect(0, 0, jframe.width, jframe.height)
@@ -103,5 +158,6 @@ fun createWindow(instance: KappaApplication): WindowHandle {
 
     return WindowHandle(jframe, jPanel).apply {
         jframe.isVisible = true
+        fixJFrameAtCenter(jframe)
     }
 }

@@ -37,6 +37,9 @@ open class Control(val handle: WindowHandle, val id: String) {
     var width: Int = -1
     var height: Int = -1
 
+    open val absoluteX: Int = x
+    open val absoluteY: Int = y
+
     var borderRadius: Int = 0
 
     var hover: Boolean = false
@@ -46,7 +49,7 @@ open class Control(val handle: WindowHandle, val id: String) {
     }
 
     private fun updateDynamics() {
-        dynamics.forEach {
+        dynamics.toTypedArray().forEach {
             it.update(this)
         }
     }
@@ -64,7 +67,12 @@ open class Control(val handle: WindowHandle, val id: String) {
     }
 }
 
-open class ChildControl(handle: WindowHandle, val parent: Control, id: String) : Control(handle, id)
+open class ChildControl(handle: WindowHandle, val parent: Control, id: String) : Control(handle, id) {
+    override val absoluteX: Int
+        get() = parent.absoluteX + x
+    override val absoluteY: Int
+        get() = parent.absoluteY + y
+}
 
 open class Container(handle: WindowHandle, parent: Control, id: String) : ChildControl(handle, parent, id) {
     val children = ArrayList<ChildControl>()
@@ -83,7 +91,7 @@ open class Container(handle: WindowHandle, parent: Control, id: String) : ChildC
         clipGraphics(g)
 
         g.translate(x, y)
-        children.forEach {
+        children.toTypedArray().forEach {
             it.render(g)
         }
         g.translate(-x, -y)
@@ -129,5 +137,5 @@ inline fun <reified R : ChildControl> Container.create(id: String, init: R.() ->
 }
 
 fun Control.clipGraphics(g: Graphics2D) {
-    g.clipRect(x, y, width, height)
+    g.clipRect(x + 1, y + 1, width - 2, height - 2)
 }
