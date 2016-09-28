@@ -1,7 +1,7 @@
 package com.aziis98.kappa
 
-import com.aziis98.control.WindowControl
-import com.aziis98.control.dynamic
+import com.aziis98.kappa.control.WindowControl
+import com.aziis98.kappa.control.dynamic
 import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.Toolkit
@@ -49,7 +49,7 @@ object Kappa {
         val defaultFont = Font("Segoe UI", Font.PLAIN, 15)
         val resolutionFactor = Toolkit.getDefaultToolkit().screenResolution * 0.01
 
-        var keyCooldown = 200
+        var keyCooldown = 10
     }
 }
 

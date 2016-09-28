@@ -1,4 +1,4 @@
-package com.aziis98.control
+package com.aziis98.kappa.control
 
 /**
  * Created by aziis98 on 26/09/2016.

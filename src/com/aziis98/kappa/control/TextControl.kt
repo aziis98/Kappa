@@ -1,4 +1,4 @@
-package com.aziis98.control
+package com.aziis98.kappa.control
 
 import com.aziis98.kappa.Kappa
 import com.aziis98.kappa.WindowHandle

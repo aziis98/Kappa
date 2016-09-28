@@ -98,32 +98,33 @@ data class WindowHandle(val jFrame: JFrame, val jPanel: JPanel) {
         var isKeyPressedPrev = false
 
         var keyCooldown = 0
-        val isEvent: Boolean
+        val hasPendingEvent: Boolean
             get() = keyCooldown > 0
 
         fun updateKeyEvents() {
-            if (isKeyPressed != isKeyPressedPrev) {
+            if (keyCooldown == 0 && isKeyPressed) {
                 keyCooldown = Kappa.Constants.keyCooldown
             } else {
                 if (keyCooldown > 0) keyCooldown--
             }
+
+            isKeyPressed = false
         }
 
         override fun keyPressed(e: KeyEvent) {
             lastKey = e.keyCode
-            isKeyPressedPrev = isKeyPressed
             isKeyPressed = true
         }
         override fun keyReleased(e: KeyEvent) {
             lastKey = e.keyCode
-            isKeyPressedPrev = isKeyPressed
-            isKeyPressed = false
         }
         override fun keyTyped(e: KeyEvent) {
-            lastKey = e.keyCode
             lastChar = e.keyChar
-            isKeyPressedPrev = isKeyPressed
             isKeyPressed = true
+        }
+
+        init {
+            jFrame.addKeyListener(this)
         }
     }
 }

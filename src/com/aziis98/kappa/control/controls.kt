@@ -1,4 +1,4 @@
-package com.aziis98.control
+package com.aziis98.kappa.control
 
 import com.aziis98.kappa.WindowHandle
 import com.sun.org.apache.xpath.internal.operations.Bool
@@ -113,6 +113,8 @@ open class WindowControl(handle: WindowHandle) : Control(handle, "window") {
 
         rootContainer.dynamic {
             positionSides(0, 0)
+
+
         }
     }
 
